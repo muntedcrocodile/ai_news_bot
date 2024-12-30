@@ -1,0 +1,20 @@
+# ai
+transformers
+torch
+langchain
+langchain-huggingface
+
+# website parseing
+feedparser
+newspaper4k
+lxml_html_clean # unsafe but required for newspaper4k
+
+# random crap
+sqlalchemy
+python-dotenv
+
+# pythorhead
+requests >= 2.31.0, < 3.0.0
+semver >= 3.0.2
+pillow >= 10.2.0
+python-dateutil >= 2.9.0
