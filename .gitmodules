@@ -1,0 +1,3 @@
+[submodule "pythorhead"]
+	path = pythorhead_repo
+	url = https://github.com/db0/pythorhead.git
