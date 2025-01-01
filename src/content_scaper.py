@@ -9,13 +9,13 @@ from datetime import datetime
 # checks if a url is a nytimes url and proxy it to bypass paywall
 def preproccess_url(url):
     if not (urllib.parse.urlparse(url).netloc == "www.nytimes.com" or urllib.parse.urlparse(url).netloc == "nytimes.com"):
-        return url
+        return url, False
 
     current_time = datetime.now()
     timestamp = current_time.strftime("%Y%m%d%H%M%S")
 
     base_url = "https://archive.md/{}/".format(timestamp)
-    return base_url + urllib.parse.quote(url, safe=':\/')
+    return base_url + urllib.parse.quote(url, safe=':\/'), True
 
 
 # remove duplicates and simplifications
@@ -27,7 +27,7 @@ def proccess_authors(authors: list):
         if key in out.keys(): continue
         out[key] = j
 
-def scrape_new_posts(callback):
+def scrape_new_posts(callback, retry=False):
     for feed in get_feeds():
         parsed_feed = feedparser.parse(feed)
 
@@ -38,6 +38,6 @@ def scrape_new_posts(callback):
 
         # Get the latest items in the feed
         for entry in parsed_feed.entries:
-            if has_seen_item(feed, entry.link):
+            if has_seen_item(feed, entry.link, retry):
                 continue
             callback(feed, entry)

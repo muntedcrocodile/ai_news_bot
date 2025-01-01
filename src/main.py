@@ -4,10 +4,10 @@ from formatter import make_body
 from lemmy_poster import post
 import time
 
-
 import json
 from newspaper import Article
-from db import add_seen_item
+
+from db import add_post
 
 import os
 
@@ -19,7 +19,9 @@ def on_new_item(feed, entry):
     title = entry.title
     print("Working on new article: {}, {}".format(url, title))
 
-    article = Article(preproccess_url(url)) # only proxy the url for requesting purposes
+    proccessed_url, was_proccessed = preproccess_url(url)
+
+    article = Article(proccessed_url) # only proxy the url for requesting purposes
     article.download()
     article.parse()
 
@@ -30,6 +32,11 @@ def on_new_item(feed, entry):
     title_images = json.dumps([x["url"] for x in entry.media_content if x["medium"]=="image"])
     print("Scraped")
 
+    scraped = True
+    if text.strip() == "":
+        scraped = False
+        print("Could not scrape text skipping")
+
     summary = summarize_text(text)
     print("Summarised")
 
@@ -38,13 +45,20 @@ def on_new_item(feed, entry):
         post(title, url, body)
         print("Posted")
 
-    add_seen_item(feed, url, title, author, published, text, summary, images, title_images, not os.environ["POST_REVIEW"])
+
+    add_post(feed, url, title, author, published, text, summary, images, title_images, scraped, not os.environ["POST_REVIEW"])
     print("Added to db")
 
+import click
 
-def main():
+
+
+@click.command()
+@click.option('--retry', is_flag=True, help='retry posts with errors')
+def main(retry):
     while True:
-        scrape_new_posts(on_new_item)
+        # scrape new items without retrying failed scrapes
+        scrape_new_posts(on_new_item, retry)
         time.sleep(10)
 
 if __name__ == "__main__":
