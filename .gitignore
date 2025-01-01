@@ -1,7 +1,7 @@
 .env
 rss_feeds.db
 start.sh
-
+.vscode/settings.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

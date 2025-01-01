@@ -3,7 +3,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
-engine = create_engine('sqlite:///rss_feeds.db')
+import os
+
+
+engine = create_engine(os.environ["DATABASE_URI"])
 Base = declarative_base()
 
 class SeenItem(Base):
@@ -18,6 +21,7 @@ class SeenItem(Base):
     images = Column(String)
     title_images = Column(String)
     summary = Column(String, default="")
+    posted = Column(Boolean, default=False)
 
 class Feed(Base):
     __tablename__ = 'feeds'
@@ -31,7 +35,7 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 
-def add_seen_item(feed_url, url, title, authors, published, text, summary, images, title_images):
+def add_seen_item(feed_url, url, title, authors, published, text, summary, images, title_images, posted):
     feed = session.query(Feed).filter_by(url=feed_url).first()
     if feed:
         new_item = SeenItem(
@@ -43,7 +47,8 @@ def add_seen_item(feed_url, url, title, authors, published, text, summary, image
             text=text,
             summary=summary,
             images=images,
-            title_images=title_images
+            title_images=title_images,
+            posted=posted
             )
         session.add(new_item)
         session.commit()
@@ -61,3 +66,22 @@ def add_feed(url, name):
 
 def get_feeds():
     return [feed.url for feed in session.query(Feed).all()]
+
+def get_unposted_items():
+    return session.query(SeenItem).filter_by(posted=False).with_entities(
+        SeenItem.id,
+        SeenItem.title,
+        SeenItem.url,
+        SeenItem.text,
+        SeenItem.summary,
+        SeenItem.authors,
+        SeenItem.published
+    ).all()
+
+def mark_posted(item_id):
+    item = session.query(SeenItem).get(item_id)
+    if item:
+        item.posted = True
+        session.commit()
+        return True
+    return False

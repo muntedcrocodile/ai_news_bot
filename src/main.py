@@ -9,7 +9,7 @@ import json
 from newspaper import Article
 from db import add_seen_item
 
-
+import os
 
 
 # Function to be called when a new RSS item is detected
@@ -33,14 +33,13 @@ def on_new_item(feed, entry):
     summary = summarize_text(text)
     print("Summarised")
 
+    if not os.environ["POST_REVIEW"]:
+        body = make_body(text, summary, author, published)
+        post(title, url, body)
+        print("Posted")
 
-    body = make_body(summary, author, published)
-    post(title, url, body)
-    print("Posted")
-
-    add_seen_item(feed, url, title, author, published, text, summary, images, title_images)
+    add_seen_item(feed, url, title, author, published, text, summary, images, title_images, not os.environ["POST_REVIEW"])
     print("Added to db")
-    print("one complete")
 
 
 def main():

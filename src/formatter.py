@@ -7,6 +7,10 @@ AI Summary:\\
 {}
 
 
+Original: {} words
+Summary: {} words
+Percent reduction: {}
+
 [I'm a bot and I'm open source](https://github.com/muntedcrocodile/ai_news_bot)
 """
 
@@ -29,8 +33,14 @@ def fix_paragraph_formatting(paragraph):
     return fixed_paragraph
 
 
-def make_body(summary, author, publish_date):
-    return TEMPLATE.format(author, publish_date.strftime("%d/%m/%Y | %H:%M:%S"), fix_paragraph_formatting(summary))
+def make_body(text, summary, author, publish_date):
+
+    original_length = len(text.split())
+    summary_length = len(summary.split())
+    percent_reduction = ((original_length - summary_length) / original_length) * 100
+    percent_reduction = f"{percent_reduction:.2f}%"
+
+    return TEMPLATE.format(author, publish_date.strftime("%d/%m/%Y | %H:%M:%S"), fix_paragraph_formatting(summary), original_length, summary_length, percent_reduction)
 
 
 

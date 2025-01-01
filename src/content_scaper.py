@@ -6,10 +6,6 @@ from db import has_seen_item, get_feeds, add_feed
 import urllib.parse
 from datetime import datetime
 
-# # testing
-# add_feed("https://rss.nytimes.com/services/xml/rss/nyt/World.xml", "NY Times: World - World")
-
-
 # checks if a url is a nytimes url and proxy it to bypass paywall
 def preproccess_url(url):
     if not (urllib.parse.urlparse(url).netloc == "www.nytimes.com" or urllib.parse.urlparse(url).netloc == "nytimes.com"):
