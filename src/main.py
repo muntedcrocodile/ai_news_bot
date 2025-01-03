@@ -14,12 +14,14 @@ import os
 import sys
 import logging
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
 # Function to be called when a new RSS item is detected
 def on_new_item(feed, entry):
+    scraped = True
     url = entry.link
+    url = url[0] if isinstance(url, tuple) else url
     title = entry.title
     logging.info("Working on new article: {}, {}".format(url, title))
 
@@ -29,10 +31,13 @@ def on_new_item(feed, entry):
     try:
         article.download()
     except newspaper.exceptions.ArticleBinaryDataException:
-        logging.info("faield for:", url)
-        return
-    article.parse()
-
+        logging.info("Failed for (ArticleBinaryDataException):", url)
+        scraped = False
+    try:
+        article.parse()
+    except newspaper.exceptions.ArticleException:
+        logging.info("Failed for (ArticleException):", url)
+        scraped = False
 
     try:
         author = entry.author
@@ -45,12 +50,13 @@ def on_new_item(feed, entry):
         title_images = json.dumps([x["url"] for x in entry.media_content if x["medium"]=="image"])
     except AttributeError:
         title_images = json.dumps(list())
-    logging.info("Scraped")
 
-    scraped = True
     if text.strip() == "":
         scraped = False
         logging.info("Could not scrape text skipping")
+    else:
+        logging.info("Scraped")
+
 
     summary = summarise_text(text)
     logging.info("Summarised")

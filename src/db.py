@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime, Boolean, UniqueConstraint
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime, Boolean, UniqueConstraint, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
@@ -118,7 +118,7 @@ def get_unposted_items():
         Post.summary,
         Post.authors,
         Post.published
-    ).all()
+    ).order_by(func.date(Post.published).asc()).all()
 
 def mark_posted(item_id):
     item = session.query(Post).get(item_id)

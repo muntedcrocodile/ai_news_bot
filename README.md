@@ -34,7 +34,11 @@ docker compsoe up
 ```
 * Add RSS feeds
 ```bash
-
+docker exec -it ai_news_bot-ainewsbot_app-1 python add_feed.py --rss "<rss>" --name "<Name>"
+```
+* Review summaries for posting (optional depending on config)
+```bash
+docker exec -it ai_news_bot-ainewsbot_app-1 python review.py
 ```
 
 ## Roadmap
@@ -62,5 +66,5 @@ This project was inspired by [LemmyAutoTldrBot](https://github.com/RikudouSage/L
 
 ## Donations
 
-monero:8916FjDhEqXJqX9Koec9WaZ4QBQAa6sgW6XhQhXSjYWpQiWB42GsggEh73YAFGF86GU2gEE1TTRdWSspuMgpWGkiPHkgBTX
-![monero:8916FjDhEqXJqX9Koec9WaZ4QBQAa6sgW6XhQhXSjYWpQiWB42GsggEh73YAFGF86GU2gEE1TTRdWSspuMgpWGkiPHkgBTX](https://github.com/muntedcrocodile/ai_news_bot/blob/main/static/images/muntedcrocodile_recieve.png?raw=true)
+* monero:8916FjDhEqXJqX9Koec9WaZ4QBQAa6sgW6XhQhXSjYWpQiWB42GsggEh73YAFGF86GU2gEE1TTRdWSspuMgpWGkiPHkgBTX
+* ![monero:8916FjDhEqXJqX9Koec9WaZ4QBQAa6sgW6XhQhXSjYWpQiWB42GsggEh73YAFGF86GU2gEE1TTRdWSspuMgpWGkiPHkgBTX](https://github.com/muntedcrocodile/ai_news_bot/blob/main/static/images/muntedcrocodile_recieve.png?raw=true)
