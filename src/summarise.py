@@ -15,7 +15,7 @@ def map_summarise(doc):
 
 def summarise_text(text):
     # Split the text into smaller chunks
-    text_splitter = CharacterTextSplitter(chunk_size=2000, chunk_overlap=0)
+    text_splitter = CharacterTextSplitter(chunk_size=2000, chunk_overlap=0, separator=". ", is_separator_regex=False, length_function=len)
     split_docs = text_splitter.split_text(text)
 
     # Apply the map step to each chunk

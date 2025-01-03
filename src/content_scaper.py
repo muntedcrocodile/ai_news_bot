@@ -1,10 +1,18 @@
 import os
+import sys
 
 import feedparser
 import time
 from db import has_seen_item, get_feeds, add_feed
 import urllib.parse
 from datetime import datetime
+
+
+import logging
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+
+
 
 # checks if a url is a nytimes url and proxy it to bypass paywall
 def preproccess_url(url):
@@ -33,7 +41,7 @@ def scrape_new_posts(callback, retry=False):
 
         # Check if the feed was successfully parsed
         if parsed_feed.status != 200:
-            print(f"Error parsing feed {feed}: {parsed_feed.status}")
+            logging.info(f"Error parsing feed {feed}: {parsed_feed.status}")
             continue
 
         # Get the latest items in the feed

@@ -1,6 +1,11 @@
 services:
   ainewsbot_app:
     build: .
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app
     environment:
       - LEMMY_INSTANCE=${LEMMY_INSTANCE}
       - LEMMY_USERNAME=${LEMMY_USERNAME}

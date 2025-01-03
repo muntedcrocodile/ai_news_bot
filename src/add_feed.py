@@ -2,6 +2,10 @@ from db import add_feed
 
 import click
 import feedparser
+import sys
+import logging
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 
 def validate_rss_feed(rss):
@@ -13,7 +17,7 @@ def validate_rss_feed(rss):
         else:
             return False
     except Exception as e:
-        print(f"Error validating RSS feed: {e}")
+        logging.info(f"Error validating RSS feed: {e}")
         return False
 
 @click.command()
@@ -22,10 +26,10 @@ def validate_rss_feed(rss):
 def add_rss_feed(rss, name):
     """Add an RSS feed with a human-readable name"""
     if validate_rss_feed(rss):
-        print(f"Adding RSS feed '{rss}' with name '{name}'")
+        logging.info(f"Adding RSS feed '{rss}' with name '{name}'")
         add_feed(rss, name)
     else:
-        print("Invalid RSS feed. Please try again.")
+        logging.info("Invalid RSS feed. Please try again.")
 
 if __name__ == "__main__":
     add_rss_feed()

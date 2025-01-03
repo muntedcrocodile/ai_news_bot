@@ -6,7 +6,11 @@ from db import get_unposted_items, mark_posted
 
 import click
 import os
+import logging
+import sys
 
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 
 def main():
@@ -16,17 +20,17 @@ def main():
 
         body = make_body(text, summary, author, published)
 
-        print("="*50)
-        print("ID:", item_id)
-        print("Title:", title)
-        print("Url:", url)
-        print("Body:", body)
-        print("\n\n")
+        logging.info("="*50)
+        logging.info("ID:", item_id)
+        logging.info("Title:", title)
+        logging.info("Url:", url)
+        logging.info("Body:", body)
+        logging.info("\n\n")
 
         if click.confirm("Post?", default=True):
             post(title, url, body)
             mark_posted(item_id)
-            print("Posted")
+            logging.info("Posted")
 
 
 if __name__ == "__main__":

@@ -5,23 +5,32 @@ from lemmy_poster import post
 import time
 
 import json
+import newspaper
 from newspaper import Article
 
 from db import add_post
 
 import os
+import sys
+import logging
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 
 # Function to be called when a new RSS item is detected
 def on_new_item(feed, entry):
     url = entry.link
     title = entry.title
-    print("Working on new article: {}, {}".format(url, title))
+    logging.info("Working on new article: {}, {}".format(url, title))
 
     proccessed_url, was_proccessed = preproccess_url(url)
 
     article = Article(proccessed_url) # only proxy the url for requesting purposes
-    article.download()
+    try:
+        article.download()
+    except newspaper.exceptions.ArticleBinaryDataException:
+        logging.info("faield for:", url)
+        return
     article.parse()
 
 
@@ -36,24 +45,24 @@ def on_new_item(feed, entry):
         title_images = json.dumps([x["url"] for x in entry.media_content if x["medium"]=="image"])
     except AttributeError:
         title_images = json.dumps(list())
-    print("Scraped")
+    logging.info("Scraped")
 
     scraped = True
     if text.strip() == "":
         scraped = False
-        print("Could not scrape text skipping")
+        logging.info("Could not scrape text skipping")
 
     summary = summarise_text(text)
-    print("Summarised")
+    logging.info("Summarised")
 
     if not os.environ["POST_REVIEW"]:
         body = make_body(text, summary, author, published)
         post(title, url, body)
-        print("Posted")
+        logging.info("Posted")
 
 
     add_post(feed, url, title, author, published, text, summary, images, title_images, scraped, not os.environ["POST_REVIEW"])
-    print("Added to db")
+    logging.info("Added to db")
 
 import click
 
