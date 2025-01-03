@@ -10,4 +10,4 @@ community_id = lemmy.discover_community(os.environ["LEMMY_COMMUNITY"])
 
 
 def post(title, url, body):
-    lemmy.post.create(community_id, title, url=url, body=body)
+    return lemmy.post.create(community_id, title, url=url, body=body)

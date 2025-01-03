@@ -17,6 +17,21 @@ import logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 
+def post_event(url, title, text, summary, author, published, scraped):
+    if int(os.environ["POST_REVIEW"]): return False
+    if not scraped: return False
+
+    if title.startswith("Latest news bulletin"): return False
+
+    body = make_body(text, summary, author, published)
+    x = post(title, url, body)
+    if not x: return False
+
+    logging.info("Posted")
+
+    return True
+    
+
 # Function to be called when a new RSS item is detected
 def on_new_item(feed, entry):
     scraped = True
@@ -57,17 +72,15 @@ def on_new_item(feed, entry):
     else:
         logging.info("Scraped")
 
+    if scraped:
+        summary = summarise_text(text)
+        logging.info("Summarised")
+    else:
+        summary = ""
 
-    summary = summarise_text(text)
-    logging.info("Summarised")
+    posted = post_event(url, title, text, summary, author, published, scraped)
 
-    if not os.environ["POST_REVIEW"]:
-        body = make_body(text, summary, author, published)
-        post(title, url, body)
-        logging.info("Posted")
-
-
-    add_post(feed, url, title, author, published, text, summary, images, title_images, scraped, not os.environ["POST_REVIEW"])
+    add_post(feed, url, title, author, published, text, summary, images, title_images, scraped, posted)
     logging.info("Added to db")
 
 import click
@@ -79,7 +92,7 @@ import click
 def main(retry):
     while True:
         # scrape new items without retrying failed scrapes
-        scrape_new_posts(on_new_item, retry)
+        scrape_new_posts(on_new_item, True)
         time.sleep(10)
 
 if __name__ == "__main__":

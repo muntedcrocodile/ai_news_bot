@@ -110,7 +110,7 @@ def get_feeds():
     return [feed.url for feed in session.query(Feed).all()]
 
 def get_unposted_items():
-    return session.query(Post).filter_by(posted=False).with_entities(
+    return session.query(Post).filter_by(posted=False, scraped=True).with_entities(
         Post.id,
         Post.title,
         Post.url,
