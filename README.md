@@ -43,6 +43,7 @@ docker exec -it ai_news_bot-ainewsbot_app-1 python review.py
 
 ## Roadmap
 
+* Add an LLm acting as a filter to remove any ads that have snuk their way into the summary, (perhaps use adblocked html loder)
 * Summarise all articles for the day/week/month/year to make a daily brief
 * Generate argument of for and against perspective then summarise the result of the 2 arguments
 * Generate embeddings to perform content grouping/simmilarity (find the missing perspectives on an issue etc) and politicla alligmnent information
