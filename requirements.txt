@@ -11,7 +11,7 @@ lxml_html_clean # unsafe but required for newspaper4k
 
 # random crap
 sqlalchemy
-python-dotenv
+psycopg2-binary
 click
 
 # lemmy interaction

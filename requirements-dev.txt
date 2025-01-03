@@ -11,9 +11,8 @@ lxml_html_clean # unsafe but required for newspaper4k
 
 # random crap
 sqlalchemy
-python-dotenv
+psycopg2-binary
 click
-
 
 # pythorhead
 requests >= 2.31.0, < 3.0.0

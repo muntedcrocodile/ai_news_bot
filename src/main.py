@@ -1,5 +1,5 @@
 from content_scaper import scrape_new_posts, preproccess_url
-from summarise import summarize_text
+from summarise import summarise_text
 from formatter import make_body
 from lemmy_poster import post
 import time
@@ -37,7 +37,7 @@ def on_new_item(feed, entry):
         scraped = False
         print("Could not scrape text skipping")
 
-    summary = summarize_text(text)
+    summary = summarise_text(text)
     print("Summarised")
 
     if not os.environ["POST_REVIEW"]:
