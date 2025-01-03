@@ -49,15 +49,16 @@ docker compsoe up
 1. Set up the bot to fetch RSS feeds from a popular news site
 2. Run the bot to generate and post summaries to a Lemmy Community e.g. [!news_summary@lemmy.dbzer0.com](https://lemm.ee/c/news_summary@lemmy.dbzer0.com)
 
-## Acknowledgments
-
-This project was inspired by [LemmyAutoTldrBot](https://github.com/RikudouSage/LemmyAutoTldrBot).
 
 ## Contributing
 
 1. Write some code
 2. Make a pull request
 * Toot me if you got any question [@muntedcrocodile@mastodon.social](https://mastodon.social/@muntedcrocodile)
+
+## Acknowledgments
+
+This project was inspired by [LemmyAutoTldrBot](https://github.com/RikudouSage/LemmyAutoTldrBot).
 
 ## Donations
 

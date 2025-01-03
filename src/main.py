@@ -14,7 +14,6 @@ import os
 
 # Function to be called when a new RSS item is detected
 def on_new_item(feed, entry):
-    
     url = entry.link
     title = entry.title
     print("Working on new article: {}, {}".format(url, title))
@@ -25,11 +24,18 @@ def on_new_item(feed, entry):
     article.download()
     article.parse()
 
-    author = entry.author
+
+    try:
+        author = entry.author
+    except AttributeError:
+        author = "Unknown"
     published = article.publish_date
     text = article.text
     images = json.dumps(article.images)
-    title_images = json.dumps([x["url"] for x in entry.media_content if x["medium"]=="image"])
+    try:
+        title_images = json.dumps([x["url"] for x in entry.media_content if x["medium"]=="image"])
+    except AttributeError:
+        title_images = json.dumps(list())
     print("Scraped")
 
     scraped = True
