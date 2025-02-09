@@ -1,4 +1,4 @@
-from content_scaper import scrape_new_posts, preproccess_url
+from content_scaper import scrape_new_posts, preproccess_url, make_profile, scrape_content, proccess_authors
 from summarise import summarise_text
 from formatter import make_body
 from lemmy_poster import post
@@ -6,7 +6,6 @@ import time
 
 import json
 import newspaper
-from newspaper import Article
 
 from db import add_post
 
@@ -22,9 +21,11 @@ def post_event(url, title, text, summary, author, published, scraped):
     if not scraped: return False
 
     if title.startswith("Latest news bulletin"): return False
+    if len(text) < 200: return False
 
     body = make_body(text, summary, author, published)
     x = post(title, url, body)
+    logging.info("Url: {}\ntitle: {}\nStatus: {}".format(url, title, str(x)))
     if not x: return False
 
     logging.info("Posted")
@@ -37,30 +38,28 @@ def on_new_item(feed, entry):
     scraped = True
     url = entry.link
     url = url[0] if isinstance(url, tuple) else url
-    title = entry.title
-    logging.info("Working on new article: {}, {}".format(url, title))
+    rss_title = entry.title
+    logging.info("Working on new article: {}, {}".format(url, rss_title))
 
     proccessed_url, was_proccessed = preproccess_url(url)
 
-    article = Article(proccessed_url) # only proxy the url for requesting purposes
+
+    content_title = ""
+    text = ""
+    content_authors = []
+    published = ""
     try:
-        article.download()
-    except newspaper.exceptions.ArticleBinaryDataException:
-        logging.info("Failed for (ArticleBinaryDataException):", url)
-        scraped = False
-    try:
-        article.parse()
-    except newspaper.exceptions.ArticleException:
-        logging.info("Failed for (ArticleException):", url)
+        content_title, text, images, content_authors, published = scrape_content(proccessed_url)
+    except Exception as e:
+        logging.error("Failed for: {}".format(url), exc_info=True)
         scraped = False
 
     try:
-        author = entry.author
+        rss_author = entry.author
     except AttributeError:
-        author = "Unknown"
-    published = article.publish_date
-    text = article.text
-    images = json.dumps(article.images)
+        rss_author = ""
+
+    images = json.dumps(images)
     try:
         title_images = json.dumps([x["url"] for x in entry.media_content if x["medium"]=="image"])
     except AttributeError:
@@ -78,6 +77,19 @@ def on_new_item(feed, entry):
     else:
         summary = ""
 
+    # use fallbacks as nessasary
+    author = rss_author
+    if author.strip() == "":
+        author = proccess_authors(content_authors)
+    if author.strip() == "":
+        author = "Unknown"
+    
+    title = rss_title
+    if title.strip() == "":
+        title = content_title
+    if author.strip() == "":
+        title = "Unknown"
+
     posted = post_event(url, title, text, summary, author, published, scraped)
 
     add_post(feed, url, title, author, published, text, summary, images, title_images, scraped, posted)
@@ -90,9 +102,12 @@ import click
 @click.command()
 @click.option('--retry', is_flag=True, help='retry posts with errors')
 def main(retry):
+    # make a playwrite profile to use for content scraping
+    make_profile("./profile_template", "./data/profile")
+
     while True:
         # scrape new items without retrying failed scrapes
-        scrape_new_posts(on_new_item, True)
+        scrape_new_posts(on_new_item, retry)
         time.sleep(10)
 
 if __name__ == "__main__":

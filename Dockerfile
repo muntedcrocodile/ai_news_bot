@@ -10,6 +10,8 @@ COPY requirements.txt ./requirements.txt
 # Install the dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN playwrite install firefox
+
 # Copy the application code
 COPY ./src .
 

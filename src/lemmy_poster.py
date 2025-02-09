@@ -2,7 +2,7 @@ from pythorhead import Lemmy
 import os
 
 
-lemmy = Lemmy(os.environ["LEMMY_INSTANCE"], request_timeout=2)
+lemmy = Lemmy(os.environ["LEMMY_INSTANCE"], request_timeout=10)
 a = lemmy.log_in(os.environ["LEMMY_USERNAME"], os.environ["LEMMY_PASSWORD"])
 
 

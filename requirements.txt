@@ -4,10 +4,11 @@ torch
 langchain
 langchain-huggingface
 
-# website parseing
+# website parseing/scraping
 feedparser
 newspaper4k
 lxml_html_clean # unsafe but required for newspaper4k
+playwright
 
 # random crap
 sqlalchemy

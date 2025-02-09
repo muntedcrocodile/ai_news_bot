@@ -4,6 +4,7 @@ start.sh
 .vscode/settings.json
 data
 requirements-test.txt
+profile/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

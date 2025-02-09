@@ -7,8 +7,8 @@ AI Summary:\\
 {}
 
 
-Original: {} words
-Summary: {} words
+Original: {} words\\
+Summary: {} words\\
 Percent reduction: {}
 
 [I'm a bot and I'm open source](https://github.com/muntedcrocodile/ai_news_bot)
