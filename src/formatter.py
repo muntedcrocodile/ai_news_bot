@@ -36,13 +36,14 @@ def fix_paragraph_formatting(paragraph):
 def make_body(text, summary, author, publish_date):
 
     summary = summary.replace("SKIP ADVERTISEMENT", "")
+    summary = fix_paragraph_formatting(summary)
 
     original_length = len(text.split())
     summary_length = len(summary.split())
     percent_reduction = ((original_length - summary_length) / original_length) * 100
     percent_reduction = f"{percent_reduction:.2f}%"
 
-    return TEMPLATE.format(author, publish_date.strftime("%d/%m/%Y | %H:%M:%S"), fix_paragraph_formatting(summary), original_length, summary_length, percent_reduction)
+    return TEMPLATE.format(author, publish_date.strftime("%d/%m/%Y | %H:%M:%S"), summary, original_length, summary_length, percent_reduction)
 
 
 
