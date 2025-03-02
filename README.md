@@ -52,7 +52,7 @@ docker exec -it ai_news_bot-ainewsbot_app-1 python review.py
 ## Example Use Case
 
 1. Set up the bot to fetch RSS feeds from a popular news site
-2. Run the bot to generate and post summaries to a Lemmy Community e.g. [!news_summary@lemmy.dbzer0.com](https://lemm.ee/c/news_summary@lemmy.dbzer0.com)
+2. Run the bot to generate and post summaries to a Lemmy Community e.g.[!news_summary@hilariouschaos.com](https://lemm.ee/c/news_summary@hilariouschaos.com)
 
 
 ## Contributing
